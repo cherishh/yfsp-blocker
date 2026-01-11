@@ -4,9 +4,23 @@
   text-align: center;
 }
 
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.logo {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
 .title {
   font-size: 1.4em;
-  margin: 0 0 16px 0;
+  margin: 0;
   color: #4ade80;
 }
 

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { storage } from '@wxt-dev/storage';
 import './App.css';
+import logo from '/yf_logo.webp';
 
 const blockedCountStorage = storage.defineItem<number>('local:blockedCount', {
   fallback: 0,
@@ -27,7 +28,10 @@ function App() {
 
   return (
     <div className="popup-container">
-      <h1 className="title">YFSP Ad Blocker</h1>
+      <div className="header">
+        <img src={logo} alt="YFSP Blocker" className="logo" />
+        <h1 className="title">YFSP Ad Blocker</h1>
+      </div>
 
       <div className="status-section">
         <div className={`status-indicator ${enabled ? 'active' : 'inactive'}`} />
