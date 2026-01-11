@@ -6,7 +6,7 @@ export default defineConfig({
   manifest: {
     name: 'YFSP Ad Blocker',
     description: '自动跳过 yfsp.tv 视频广告',
-    version: '1.0.0',
+    version: '0.0.1',
     permissions: ['storage'],
     host_permissions: ['*://*.yfsp.tv/*'],
   },
