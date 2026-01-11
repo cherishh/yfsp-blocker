@@ -51,7 +51,12 @@ function App() {
         </button>
       </div>
 
-      <p className="footer">自动跳过 yfsp.tv 视频广告</p>
+      <div className="footer">
+        <p className="footer-desc">自动跳过 yfsp.tv 视频广告</p>
+        <p className="footer-author">
+          作者：Tuxi | <a href="mailto:one77r@gmail.com">one77r@gmail.com</a>
+        </p>
+      </div>
     </div>
   );
 }
