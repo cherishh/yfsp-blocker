@@ -1,0 +1,90 @@
+.popup-container {
+  width: 280px;
+  padding: 20px;
+  text-align: center;
+}
+
+.title {
+  font-size: 1.4em;
+  margin: 0 0 16px 0;
+  color: #4ade80;
+}
+
+.status-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.status-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.status-indicator.active {
+  background-color: #4ade80;
+  box-shadow: 0 0 8px #4ade80;
+}
+
+.status-indicator.inactive {
+  background-color: #ef4444;
+}
+
+.status-text {
+  font-size: 0.9em;
+  color: #a1a1aa;
+}
+
+.stats-section {
+  margin-bottom: 20px;
+}
+
+.stat-card {
+  background: rgba(74, 222, 128, 0.1);
+  border: 1px solid rgba(74, 222, 128, 0.3);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stat-number {
+  font-size: 2.5em;
+  font-weight: 700;
+  color: #4ade80;
+}
+
+.stat-label {
+  font-size: 0.85em;
+  color: #a1a1aa;
+}
+
+.actions {
+  margin-bottom: 16px;
+}
+
+.reset-btn {
+  background: transparent;
+  border: 1px solid #3f3f46;
+  color: #a1a1aa;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85em;
+  transition: all 0.2s;
+}
+
+.reset-btn:hover {
+  border-color: #4ade80;
+  color: #4ade80;
+}
+
+.footer {
+  margin: 0;
+  font-size: 0.75em;
+  color: #52525b;
+}
