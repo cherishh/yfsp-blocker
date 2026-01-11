@@ -310,12 +310,18 @@ export default defineContentScript({
   matches: ['*://*.yfsp.tv/*'],
   runAt: 'document_idle',
 
-  main() {
+  main(ctx) {
     console.log('[YFSP Blocker] Content script loaded');
 
     checkExistingAds();
-    setupMutationObserver();
+    const observer = setupMutationObserver();
 
-    setInterval(checkExistingAds, 5000);
+    const intervalId = setInterval(checkExistingAds, 5000);
+
+    ctx.onInvalidated(() => {
+      console.log('[YFSP Blocker] Content script invalidated, cleaning up');
+      clearInterval(intervalId);
+      observer.disconnect();
+    });
   },
 });
