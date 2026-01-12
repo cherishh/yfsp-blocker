@@ -214,7 +214,7 @@ function forceShowControls(): void {
     setTimeout(() => {
       player.classList.remove('yfsp-force-controls');
       console.log('[YFSP Blocker] Force controls class removed');
-    }, 25000);
+    }, 15000);
   }
 }
 
