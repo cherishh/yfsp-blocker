@@ -45,6 +45,12 @@ const blockedCountStorage = storage.defineItem<number>('local:blockedCount', {
   fallback: 0,
 });
 
+const enabledStorage = storage.defineItem<boolean>('local:enabled', {
+  fallback: true,
+});
+
+let isEnabled = true;
+
 async function incrementBlockedCount(): Promise<void> {
   const current = await blockedCountStorage.getValue();
   await blockedCountStorage.setValue(current + 1);
@@ -230,6 +236,8 @@ function handleAdDetection(adOverlay: Element): void {
 }
 
 function checkExistingAds(): void {
+  if (!isEnabled) return;
+
   const adsBySelector = queryAll(AD_OVERLAY_SELECTORS);
   adsBySelector.forEach(ad => handleAdDetection(ad));
 
@@ -258,6 +266,8 @@ function matchesAnySelector(element: Element, selectors: string[]): boolean {
 
 function setupMutationObserver(): MutationObserver {
   const observer = new MutationObserver(mutations => {
+    if (!isEnabled) return;
+
     for (const mutation of mutations) {
       if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
         const target = mutation.target as HTMLElement;
@@ -310,8 +320,18 @@ export default defineContentScript({
   matches: ['*://*.yfsp.tv/*'],
   runAt: 'document_idle',
 
-  main(ctx) {
+  async main(ctx) {
     console.log('[YFSP Blocker] Content script loaded');
+
+    // 初始化开关状态
+    isEnabled = await enabledStorage.getValue();
+    console.log('[YFSP Blocker] Protection enabled:', isEnabled);
+
+    // 监听开关状态变化
+    const unwatchEnabled = enabledStorage.watch((newValue) => {
+      isEnabled = newValue ?? true;
+      console.log('[YFSP Blocker] Protection toggled:', isEnabled);
+    });
 
     checkExistingAds();
     const observer = setupMutationObserver();
@@ -322,6 +342,7 @@ export default defineContentScript({
       console.log('[YFSP Blocker] Content script invalidated, cleaning up');
       clearInterval(intervalId);
       observer.disconnect();
+      unwatchEnabled();
     });
   },
 });

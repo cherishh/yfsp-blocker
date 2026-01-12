@@ -1,30 +1,11 @@
 .popup-container {
-  width: 280px;
-  padding: 20px;
+  width: 260px;
+  padding: 20px 24px;
   text-align: center;
 }
 
+/* ===== 头部 ===== */
 .header {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 16px;
-}
-
-.logo {
-  width: 32px;
-  height: 32px;
-  object-fit: contain;
-}
-
-.title {
-  font-size: 1.4em;
-  margin: 0;
-  color: #4ade80;
-}
-
-.status-section {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -32,92 +13,167 @@
   margin-bottom: 20px;
 }
 
-.status-indicator {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
+.logo {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  opacity: 0.9;
 }
 
-.status-indicator.active {
-  background-color: #4ade80;
-  box-shadow: 0 0 8px #4ade80;
-}
-
-.status-indicator.inactive {
-  background-color: #ef4444;
-}
-
-.status-text {
-  font-size: 0.9em;
+.title {
+  font-size: 0.95em;
+  font-weight: 500;
   color: #a1a1aa;
+  letter-spacing: 0.02em;
 }
 
-.stats-section {
-  margin-bottom: 20px;
-}
-
-.stat-card {
-  background: rgba(74, 222, 128, 0.1);
-  border: 1px solid rgba(74, 222, 128, 0.3);
-  border-radius: 12px;
-  padding: 16px;
+/* ===== 运行状态 - 核心视觉焦点 ===== */
+.status-hero {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 24px;
+  padding: 16px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
 }
 
-.stat-number {
-  font-size: 2.5em;
-  font-weight: 700;
-  color: #4ade80;
+.status-hero:hover {
+  background: rgba(63, 63, 70, 0.3);
+  border-color: rgba(63, 63, 70, 0.5);
 }
 
-.stat-label {
-  font-size: 0.85em;
-  color: #a1a1aa;
+.status-hero:active {
+  transform: scale(0.98);
 }
 
-.actions {
+.status-orb {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.orb-core {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  z-index: 2;
+}
+
+.status-orb.active .orb-core {
+  background: radial-gradient(circle at 35% 35%, #86efac, #22c55e 60%, #16a34a);
+  box-shadow:
+    0 0 20px rgba(34, 197, 94, 0.6),
+    0 0 40px rgba(34, 197, 94, 0.3),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.status-orb.inactive .orb-core {
+  background: radial-gradient(circle at 35% 35%, #fca5a5, #ef4444 60%, #dc2626);
+  box-shadow:
+    0 0 12px rgba(239, 68, 68, 0.4),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.status-label {
+  font-size: 1.1em;
+  font-weight: 600;
+  color: #22c55e;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.status-label.inactive {
+  color: #ef4444;
+}
+
+.status-hint {
+  font-size: 0.7em;
+  color: #52525b;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.status-hero:hover .status-hint {
+  opacity: 1;
+}
+
+/* ===== 拦截统计 - 次要信息 ===== */
+.stats-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 0;
   margin-bottom: 16px;
+  border-top: 1px solid rgba(63, 63, 70, 0.5);
+  border-bottom: 1px solid rgba(63, 63, 70, 0.5);
+}
+
+.stats-count {
+  font-size: 1.2em;
+  font-weight: 600;
+  color: #71717a;
+  font-variant-numeric: tabular-nums;
+}
+
+.stats-label {
+  font-size: 0.8em;
+  color: #52525b;
 }
 
 .reset-btn {
   background: transparent;
-  border: 1px solid #3f3f46;
-  color: #a1a1aa;
-  padding: 8px 16px;
-  border-radius: 6px;
+  border: none;
+  color: #52525b;
+  font-size: 1em;
   cursor: pointer;
-  font-size: 0.85em;
+  padding: 2px 6px;
+  border-radius: 4px;
   transition: all 0.2s;
+  line-height: 1;
 }
 
 .reset-btn:hover {
-  border-color: #4ade80;
-  color: #4ade80;
+  color: #a1a1aa;
+  background: rgba(63, 63, 70, 0.5);
 }
 
+/* ===== 底部 ===== */
 .footer {
   margin: 0;
 }
 
 .footer-desc {
   margin: 0 0 4px 0;
-  font-size: 0.75em;
-  color: #a1a1aa;
+  font-size: 0.72em;
+  color: #52525b;
 }
 
 .footer-author {
   margin: 0;
-  font-size: 0.7em;
-  color: #a1a1aa;
 }
 
-.footer-author a {
-  color: #4ade80;
+.author-text {
+  font-size: 0.65em;
+  color: #3f3f46;
+}
+
+.author-text a {
+  color: #3f3f46;
   text-decoration: none;
+  transition: color 0.2s;
 }
 
-.footer-author a:hover {
-  text-decoration: underline;
+.author-text a:hover {
+  color: #52525b;
 }
