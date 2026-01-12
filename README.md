@@ -2,6 +2,11 @@
 
 自动跳过 [yfsp.tv](https://www.yfsp.tv/) 视频广告的 Chrome 扩展。
 
+<p>
+  <img src="public/shot1.png" width="300" />
+  <img src="public/shot2.png" width="200" />
+</p>
+
 ## 前置要求
 
 本扩展需要配合 [Adblock Plus](https://chromewebstore.google.com/detail/adblock-plus-free-ad-bloc/cfhdojbkjhnklbpkdaibdccddilifddb) 使用，请先安装。

@@ -14,8 +14,8 @@ YFSP Ad Blocker 需要配合 Adblock Plus 使用，请先安装它。
 
 ## 第二步：下载 YFSP Ad Blocker
 
-1. 点击下载链接：[YFSP Ad Blocker 下载](https://tuxi.dev/d/eWZzcC1ibG9ja2VyLTAuMC4xLWNocm9tZS56aXA?e=1799674590&s=dfed4036f619fb64)
-2. 下载完成后，找到下载的 `yfsp-blocker-0.0.1-chrome.zip` 文件
+1. 点击下载链接：[YFSP Ad Blocker 下载](https://github.com/cherishh/yfsp-blocker/releases/download/v0.0.2/yfsp-blocker-0.0.2-chrome.zip)
+2. 下载完成后，找到下载的 `yfsp-blocker-0.0.2-chrome.zip` 文件
 3. 解压该文件到任意位置
 
 ## 第三步：安装 YFSP Ad Blocker
