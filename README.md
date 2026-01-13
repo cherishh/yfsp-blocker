@@ -9,7 +9,7 @@
 
 ## tl;dr
 
-如果你不懂技术，请参考[这篇文章](https://github.com/cherishh/yfsp-blocker/blob/main/how-to-use.md)进行安装。
+如果你不想了解技术细节，只想直接使用，请参考[这篇文章](https://github.com/cherishh/yfsp-blocker/blob/main/how-to-use.md)进行安装。
 
 ## 功能
 
