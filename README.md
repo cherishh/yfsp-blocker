@@ -7,9 +7,9 @@
   <img src="public/shot2.png" width="200" />
 </p>
 
-## 前置要求
+## tl;dr
 
-本扩展需要配合 [Adblock Plus](https://chromewebstore.google.com/detail/adblock-plus-free-ad-bloc/cfhdojbkjhnklbpkdaibdccddilifddb) 使用，请先安装。
+如果你不懂技术，请参考[这篇文章](https://github.com/cherishh/yfsp-blocker/blob/main/how-to-use.md)进行安装。
 
 ## 功能
 
