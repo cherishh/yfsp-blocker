@@ -58,41 +58,59 @@ const enabledStorage = storage.defineItem<boolean>('local:enabled', {
 
 let isEnabled = true;
 
+// Utility: Debounce function
+function debounce<T extends (...args: any[]) => any>(fn: T, delay: number): (...args: Parameters<T>) => void {
+  let timeoutId: ReturnType<typeof setTimeout> | null = null;
+  return (...args: Parameters<T>) => {
+    if (timeoutId) clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => fn(...args), delay);
+  };
+}
+
 async function incrementBlockedCount(): Promise<void> {
   const current = await blockedCountStorage.getValue();
   await blockedCountStorage.setValue(current + 1);
 }
 
 function queryFirst<T extends Element>(selectors: string[]): T | null {
-  for (const selector of selectors) {
-    try {
-      const el = document.querySelector<T>(selector);
-      if (el) return el;
-    } catch {
-      continue;
+  try {
+    return document.querySelector<T>(selectors.join(','));
+  } catch {
+    // Fallback to individual selectors if join fails
+    for (const selector of selectors) {
+      try {
+        const el = document.querySelector<T>(selector);
+        if (el) return el;
+      } catch {
+        continue;
+      }
     }
   }
   return null;
 }
 
 function queryAll(selectors: string[]): Element[] {
-  const results: Element[] = [];
-  const seen = new WeakSet<Element>();
-
-  for (const selector of selectors) {
-    try {
-      const elements = document.querySelectorAll(selector);
-      elements.forEach(el => {
-        if (!seen.has(el)) {
-          seen.add(el);
-          results.push(el);
-        }
-      });
-    } catch {
-      continue;
+  try {
+    return Array.from(document.querySelectorAll(selectors.join(',')));
+  } catch {
+    // Fallback to individual selectors if join fails
+    const results: Element[] = [];
+    const seen = new WeakSet<Element>();
+    for (const selector of selectors) {
+      try {
+        const elements = document.querySelectorAll(selector);
+        elements.forEach(el => {
+          if (!seen.has(el)) {
+            seen.add(el);
+            results.push(el);
+          }
+        });
+      } catch {
+        continue;
+      }
     }
+    return results;
   }
-  return results;
 }
 
 const WHITELIST_SELECTORS = [
@@ -458,48 +476,6 @@ function enhanceSpeedMenu(menu: Element): void {
   console.log('[YFSP Blocker] Speed menu enhanced with custom options');
 }
 
-function setupSpeedMenuObserver(): MutationObserver {
-  const observer = new MutationObserver((mutations) => {
-    for (const mutation of mutations) {
-      // 检测菜单打开（class 变化添加 opened）
-      if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-        const target = mutation.target as HTMLElement;
-        if (target.classList.contains('player-speed-menu') &&
-            target.classList.contains('opened')) {
-          enhanceSpeedMenu(target);
-        }
-      }
-
-      // 检测新添加的菜单元素
-      for (const node of mutation.addedNodes) {
-        if (!(node instanceof HTMLElement)) continue;
-
-        // 直接是菜单
-        if (node.classList.contains('player-speed-menu')) {
-          if (node.classList.contains('opened')) {
-            enhanceSpeedMenu(node);
-          }
-        }
-
-        // 包含菜单的容器
-        const menu = node.querySelector('.player-speed-menu.opened');
-        if (menu) {
-          enhanceSpeedMenu(menu);
-        }
-      }
-    }
-  });
-
-  observer.observe(document.body, {
-    childList: true,
-    subtree: true,
-    attributes: true,
-    attributeFilter: ['class'],
-  });
-
-  return observer;
-}
-
 // ========== 播放恢复功能 ==========
 
 function resumePlayback(): void {
@@ -545,6 +521,9 @@ function checkExistingAds(): void {
   }
 }
 
+// Debounced version of checkExistingAds
+const debouncedCheckAds = debounce(checkExistingAds, 100);
+
 function matchesAnySelector(element: Element, selectors: string[]): boolean {
   return selectors.some(selector => {
     try {
@@ -555,45 +534,65 @@ function matchesAnySelector(element: Element, selectors: string[]): boolean {
   });
 }
 
-function setupMutationObserver(): MutationObserver {
+function setupObservers(): MutationObserver {
   const observer = new MutationObserver(mutations => {
     if (!isEnabled) return;
 
+    let shouldCheckAds = false;
+
     for (const mutation of mutations) {
+      // Handle Ad Detection
       if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
         const target = mutation.target as HTMLElement;
+        
+        // Check for ad state class change
         if (AD_STATE_CLASSES.some(cls => target.classList.contains(cls))) {
-          console.log('[YFSP Blocker] Detected ad state class change');
-          setTimeout(checkExistingAds, 50);
+          shouldCheckAds = true;
+        }
+
+        // Check for speed menu opening
+        if (target.classList.contains('player-speed-menu') && target.classList.contains('opened')) {
+          enhanceSpeedMenu(target);
         }
       }
 
-      for (const node of mutation.addedNodes) {
-        if (!(node instanceof HTMLElement)) continue;
+      if (mutation.type === 'childList') {
+        for (const node of mutation.addedNodes) {
+          if (!(node instanceof HTMLElement)) continue;
 
-        if (matchesAnySelector(node, AD_OVERLAY_SELECTORS)) {
-          handleAdDetection(node);
-          continue;
-        }
-
-        if (isAdOverlayByFeature(node)) {
-          handleAdDetection(node);
-          continue;
-        }
-
-        const adOverlays = queryAll(AD_OVERLAY_SELECTORS.map(s => `:scope ${s}`));
-        for (const selector of AD_OVERLAY_SELECTORS) {
-          try {
-            const adOverlay = node.querySelector(selector);
-            if (adOverlay) {
-              handleAdDetection(adOverlay);
-              break;
+          // Ad detection
+          if (matchesAnySelector(node, AD_OVERLAY_SELECTORS) || isAdOverlayByFeature(node)) {
+            handleAdDetection(node);
+          } else {
+            // Check children for ads
+            for (const selector of AD_OVERLAY_SELECTORS) {
+              try {
+                const adOverlay = node.querySelector(selector);
+                if (adOverlay) {
+                  handleAdDetection(adOverlay);
+                  break;
+                }
+              } catch { continue; }
             }
-          } catch {
-            continue;
+          }
+
+          // Speed menu detection
+          if (node.classList.contains('player-speed-menu')) {
+            if (node.classList.contains('opened')) {
+              enhanceSpeedMenu(node);
+            }
+          } else {
+            const menu = node.querySelector('.player-speed-menu.opened');
+            if (menu) {
+              enhanceSpeedMenu(menu);
+            }
           }
         }
       }
+    }
+
+    if (shouldCheckAds) {
+      debouncedCheckAds();
     }
   });
 
@@ -630,16 +629,15 @@ export default defineContentScript({
     });
 
     checkExistingAds();
-    const observer = setupMutationObserver();
-    const speedMenuObserver = setupSpeedMenuObserver();
+    const observer = setupObservers();
 
-    const intervalId = setInterval(checkExistingAds, 5000);
+    // Use a longer interval as a fallback only
+    const intervalId = setInterval(checkExistingAds, 10000);
 
     ctx.onInvalidated(() => {
       console.log('[YFSP Blocker] Content script invalidated, cleaning up');
       clearInterval(intervalId);
       observer.disconnect();
-      speedMenuObserver.disconnect();
       unwatchEnabled();
     });
   },
