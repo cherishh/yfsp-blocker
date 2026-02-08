@@ -1,4 +1,5 @@
 import { storage } from '@wxt-dev/storage';
+import { MATCH_PATTERNS } from '../domains';
 
 const AD_OVERLAY_SELECTORS = [
   '.publicbox.ng-star-inserted',
@@ -608,7 +609,7 @@ function setupMutationObserver(): MutationObserver {
 }
 
 export default defineContentScript({
-  matches: ['*://*.yfsp.tv/*'],
+  matches: MATCH_PATTERNS,
   runAt: 'document_idle',
 
   async main(ctx) {

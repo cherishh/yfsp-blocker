@@ -4,7 +4,10 @@
       "Bash(file:*)",
       "Bash(convert:*)",
       "Bash(ls:*)",
-      "Bash(magick:*)"
+      "Bash(magick:*)",
+      "Bash(pnpm run compile:*)",
+      "Bash(pnpm run build:*)",
+      "Bash(pnpm run zip:*)"
     ]
   }
 }
