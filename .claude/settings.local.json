@@ -7,7 +7,9 @@
       "Bash(magick:*)",
       "Bash(pnpm run compile:*)",
       "Bash(pnpm run build:*)",
-      "Bash(pnpm run zip:*)"
+      "Bash(pnpm run zip:*)",
+      "Bash(git:*)",
+      "Bash(pnpm zip:*)"
     ]
   }
 }
